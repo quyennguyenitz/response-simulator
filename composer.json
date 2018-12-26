@@ -1,0 +1,24 @@
+{
+    "name": "quyennguyenitz/response-simulator",
+    "description": "API response simulator.",
+    "keywords": ["API response simulator", "API response", "response simulator","API simulator","response simulate"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Quyen Nguyen",
+            "email": "quyennguyenitz@gmail.com"
+        }
+    ],
+    "type": "project",
+    "require": {
+		"php": ">=7.1"
+    },
+    "require-dev": {
+		"phpunit/phpunit": "6.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "QuyenNguyenItz\\": "src/"
+        }
+    }
+}
