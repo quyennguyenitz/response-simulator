@@ -63,7 +63,7 @@ class Binding
 		$value_analyze = explode('|',$value);
 		foreach($value_analyze as $value_analyzed)
 		{
-			if( isset(DataType::DATA_TYPES[$value_analyzed]) )
+			if( isset(DataType::DATA_RULES[$value_analyzed]) )
 			{
 				$data_type = $value_analyzed;
 				continue;
@@ -72,11 +72,19 @@ class Binding
 			$value_analyzed = explode(':',$value_analyzed);
 			if( count($value_analyzed) == 2 )
 			{
-				$conditions[$value_analyzed[0]] = $value_analyzed[1];
+				if( $value_analyzed[0] == 'in' )
+				{
+					$conditions[$value_analyzed[0]] = explode(',', $value_analyzed[1]);
+				}
+				else
+				{
+					$conditions[$value_analyzed[0]] = $value_analyzed[1];
+				}
 			}
 		}
 
 		$result = DataType::getValue($data_type,$conditions);
 
+		return $result;
 	}
 }
