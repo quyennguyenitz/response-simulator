@@ -1,20 +1,24 @@
 <?php
 namespace QuyenNguyenItz\Helpers;
 
+use Carbon\Carbon;
+
 class DataType
 {
 	const DATA_RULES = [
 		'code' => ['prefix','content'],
 		'integer' => ['length','in'],
 		'string' => ['min','max','in'],
-		'date' => [],
-		'datetime' => []
+		'date' => ['format','min','max','now']
 	];
 
 	private static $numbers = [1,2,3,4,5,6,7,8,9,0];
 	private static $chars = [
 		'Q','W','E','R','T','Y','U','I','O','P','A','S','D','F','G',
-		'H','J','K','L','Z','X','C','V','B','N','M'];
+		'H','J','K','L','Z','X','C','V','B','N','M',
+		'q','w','e','r','t','y','u','i','o','p','a','s','d','f','g',
+		'h','j','k','l','z','x','c','v','b','n','m'
+	];
 
 	public static function getValue($data_type,$conditions)
 	{
@@ -30,8 +34,8 @@ class DataType
 				$val = self::getCodeValue($conditions);
 				break;
 			case 'date':
-			case 'datetime':
-				$val = self::getDatetimeValue($conditions,$data_type);
+				$val = self::getDatetimeValue($conditions);
+				echo $val;die;
 				break;
 			default:
 				$val = null;
@@ -161,9 +165,62 @@ class DataType
 		return $result;
 	}
 
-	private static function getDatetimeValue($conditions,$data_type)
+	private static function getDatetimeValue($conditions)
 	{
+		$format = isset($conditions['format']) ? $conditions['format'] : 'Y-m-d';
+		if(isset($conditions['value']))
+		{
+			if( $conditions['value'] == 'current' )
+			{
+				return date($format);
+			}
+			return $conditions['value'];
+		}
 
+		$min = null;
+		if(isset($conditions['min']))
+		{
+			if($conditions['min']=='current')
+			{
+				$min = date($format);
+			}
+			else
+			{
+				$min = $conditions['min'];
+			}
+		}
+
+		$max = null;
+		if(isset($conditions['max']))
+		{
+			if($conditions['max']=='current')
+			{
+				$max = date($format);
+			}
+			else
+			{
+				$max = $conditions['max'];
+			}
+		}
+
+		if(!empty($min) && !empty($max) && strtotime($min)<strtotime($max)) {
+			dd(Carbon::createFromTimeString($max));
+			return Carbon::createFromTimeString($max)->subSeconds(rand(0,$max - $min));
+		} elseif(!empty($min)) {
+			return Carbon::createFromTimeString($min)->addDays(rand(0,365));
+		} elseif(!empty($max)) {
+			return Carbon::createFromTimeString($max)->subDays(rand(0,365));
+		} else {
+			$rand_num = rand(1,2);
+			if($rand_num == 1)
+			{
+				return Carbon::now()->subDays(rand(0,365));
+			}
+			else
+			{
+				return Carbon::now()->addDays(rand(0,365));
+			}
+		}
 	}
 
 }
