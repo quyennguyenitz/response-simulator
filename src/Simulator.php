@@ -58,8 +58,15 @@ class Simulator
 		$this->template_result_key = $this->config['response_template']['result_key'];
 
 		$this->response_formats = isset($this->config['response_format']) ? $this->config['response_format'] : [];
-		$this->response_format = isset($this->response_formats[$this->config['default_response_format']]) ? $this->response_formats[$this->config['default_response_format']] : null;
-
+		$default_response_format = isset($this->config['default_response_format']) ? $this->config['default_response_format'] : null;
+		if($default_response_format && isset($this->response_formats[$default_response_format]))
+		{
+			$this->response_format = $this->response_formats[$default_response_format];
+		}
+		else
+		{
+			$this->response_format = [];
+		}
 	}
 
 	private function mappingResponseData()
@@ -83,7 +90,7 @@ class Simulator
 	public function response()
 	{
 		$this->mappingResponseData();
-		dd($this);
+		dd($this->result);
 		return response()->json($this->result);
 	}
 }

@@ -6,10 +6,10 @@ use Carbon\Carbon;
 class DataType
 {
 	const DATA_RULES = [
-		'code' => ['prefix','content'],
+		'code' => ['prefix','content','suffix'],
 		'integer' => ['length','in'],
 		'string' => ['min','max','in'],
-		'date' => ['format','min','max','now']
+		'date' => ['format','min','max','value']
 	];
 
 	private static $numbers = [1,2,3,4,5,6,7,8,9,0];
@@ -173,7 +173,7 @@ class DataType
 			{
 				return date($format);
 			}
-			return $conditions['value'];
+			return date($format, strtotime($conditions['value']));
 		}
 
 		$min = null;
@@ -202,24 +202,32 @@ class DataType
 			}
 		}
 
+		$time = null;
 		$range_time = strtotime($max) - strtotime($min);
 		if(!empty($min) && !empty($max) && $range_time > 0) {
-			return Carbon::createFromTimeString($max)->subSeconds(rand(0,$range_time));
+			$time = Carbon::createFromTimeString($max)->subSeconds(rand(0,$range_time));
 		} elseif(!empty($min)) {
-			return Carbon::createFromTimeString($min)->addDays(rand(0,365));
+			$time = Carbon::createFromTimeString($min)->addDays(rand(0,365));
 		} elseif(!empty($max)) {
-			return Carbon::createFromTimeString($max)->subDays(rand(0,365));
+			$time = Carbon::createFromTimeString($max)->subDays(rand(0,365));
 		} else {
 			$rand_num = rand(1,2);
 			if($rand_num == 1)
 			{
-				return Carbon::now()->subDays(rand(0,365));
+				$time = Carbon::now()->subDays(rand(0,365));
 			}
 			else
 			{
-				return Carbon::now()->addDays(rand(0,365));
+				$time = Carbon::now()->addDays(rand(0,365));
 			}
 		}
+
+		if(!empty($time))
+		{
+			$time = $time->format($format);
+		}
+
+		return $time;
 	}
 
 }

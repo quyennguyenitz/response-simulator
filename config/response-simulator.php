@@ -15,7 +15,8 @@ return [
 		'result_key' => 'result'
 	],
 
-	'default_response_format' => 'list',
+	//'default_response_format' => 'list',
+	'default_response_format' => false,
 	'response_format' => [
 		'list' => [
 			// define response template for get list response

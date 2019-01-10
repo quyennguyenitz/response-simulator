@@ -8,33 +8,39 @@ class Binding
 
 	}
 
-	public function bindingKeys($response_format,$response_structure,$length)
+	public function bindingKeys($response_format,$response_structure,$length=1)
 	{
 		$result = [];
 		$response_data = null;
 
-		$data_key = $response_format['data_key'];
-
-		foreach($response_format['template'] as $key=>$value)
+		if(!empty($response_format))
 		{
-			if(is_int($key)) {
-				$_key = $value;
-				$_val = null;
-			} else {
-				$_key = $key;
-				$_val = $value;
-			}
-
-			if(isset($response_structure[$_key]))
+			foreach($response_format['template'] as $key=>$value)
 			{
-				$_val = $response_structure[$key];
+				if(is_int($key)) {
+					$_key = $value;
+					$_val = null;
+				} else {
+					$_key = $key;
+					$_val = $value;
+				}
+
+				if(isset($response_structure[$_key]))
+				{
+					$_val = $response_structure[$key];
+				}
+
+				$result[$_key] = $_val;
 			}
 
-			$result[$_key] = $_val;
+			$data_key = $response_format['data_key'];
+			$data_template = $this->bindingFormatData($result[$data_key],$length);
+			$result[$data_key] = $data_template;
 		}
-
-		$data_template = $this->bindingFormatData($result[$data_key],$length);
-		$result[$data_key] = $data_template;
+		else
+		{
+			$result = $this->bindingFormatData($response_structure,$length);
+		}
 
 		return $result;
 	}
@@ -44,12 +50,16 @@ class Binding
 		$result = null;
 		for( $i = 0; $i < $length; $i++ )
 		{
+			$item_data = null;
 			foreach($template as $key => $value)
 			{
-				$item_data = null;
-				$this->getItemValue($value);
+				$item_data[$key] = $this->getItemValue($value);
 			}
-			$result[] = $item_data;
+
+			if(!empty($item_data))
+			{
+				$result[] = $item_data;
+			}
 		}
 
 		return $result;
@@ -70,15 +80,16 @@ class Binding
 			}
 
 			$value_analyzed = explode(':',$value_analyzed);
-			if( count($value_analyzed) == 2 )
+			if( count($value_analyzed) >= 2 )
 			{
-				if( $value_analyzed[0] == 'in' )
-				{
-					$conditions[$value_analyzed[0]] = explode(',', $value_analyzed[1]);
-				}
-				else
-				{
-					$conditions[$value_analyzed[0]] = $value_analyzed[1];
+				$condition_key = $value_analyzed[0];
+				if( $condition_key == 'in' ) {
+					$conditions[$condition_key] = explode(',', $value_analyzed[1]);
+				} elseif($condition_key == 'format'){
+					unset($value_analyzed[0]);
+					$conditions[$condition_key] = implode(':',$value_analyzed);
+				} else {
+					$conditions[$condition_key] = $value_analyzed[1];
 				}
 			}
 		}
