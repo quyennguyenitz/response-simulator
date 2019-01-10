@@ -35,7 +35,6 @@ class DataType
 				break;
 			case 'date':
 				$val = self::getDatetimeValue($conditions);
-				echo $val;die;
 				break;
 			default:
 				$val = null;
@@ -182,11 +181,11 @@ class DataType
 		{
 			if($conditions['min']=='current')
 			{
-				$min = date($format);
+				$min = date('Y-m-d H:i:s');
 			}
 			else
 			{
-				$min = $conditions['min'];
+				$min = date('Y-m-d H:i:s', strtotime($conditions['min']));
 			}
 		}
 
@@ -195,17 +194,17 @@ class DataType
 		{
 			if($conditions['max']=='current')
 			{
-				$max = date($format);
+				$max = date('Y-m-d H:i:s');
 			}
 			else
 			{
-				$max = $conditions['max'];
+				$max = date('Y-m-d H:i:s', strtotime($conditions['max']));
 			}
 		}
 
-		if(!empty($min) && !empty($max) && strtotime($min)<strtotime($max)) {
-			dd(Carbon::createFromTimeString($max));
-			return Carbon::createFromTimeString($max)->subSeconds(rand(0,$max - $min));
+		$range_time = strtotime($max) - strtotime($min);
+		if(!empty($min) && !empty($max) && $range_time > 0) {
+			return Carbon::createFromTimeString($max)->subSeconds(rand(0,$range_time));
 		} elseif(!empty($min)) {
 			return Carbon::createFromTimeString($min)->addDays(rand(0,365));
 		} elseif(!empty($max)) {
