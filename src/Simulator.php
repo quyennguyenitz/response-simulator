@@ -19,12 +19,11 @@ class Simulator
 	private $length;
 	private $is_single=false;
 
-	public function __construct($response_structure,$length=1)
+	public function __construct($length=1)
 	{
 		// todo code
 		$this->bindingFactory = new Binding();
 		$this->setConfig();
-		$this->response_structure = $response_structure;
 		$this->length = $length;
 	}
 
@@ -75,6 +74,12 @@ class Simulator
 		$result = $this->template;
 		$result[$this->template_result_key] = $this->bindingFactory->bindingKeys($this->response_structure,$this->response_format,$this->length,$this->is_single);
 		$this->result = $result;
+	}
+
+	public function structure($structure)
+	{
+		$this->response_structure = $structure;
+		return $this;
 	}
 
 	public function length($length)
