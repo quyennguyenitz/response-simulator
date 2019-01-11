@@ -110,7 +110,8 @@ class Simulator
 	public function single()
 	{
 		$this->is_single = true;
-		return $this;
+		$this->mappingResponseData();
+		return response()->json($this->result);
 	}
 
 	public function response()
