@@ -8,9 +8,8 @@ class Binding
 
 	}
 
-	public function bindingKeys($response_structure,$response_format,$length=1)
+	public function bindingKeys($response_structure,$response_format,$length, $is_single)
 	{
-		dd($response_format);
 		$result = [];
 		$response_data = null;
 
@@ -26,21 +25,22 @@ class Binding
 					$_val = $value;
 				}
 
-				if(isset($response_structure[$_key]))
-				{
-					$_val = $response_structure[$key];
-				}
-
 				$result[$_key] = $_val;
 			}
 
-			$data_key = $response_format['data_key'];
-			$data_template = $this->bindingFormatData($result[$data_key],$length);
-			$result[$data_key] = $data_template;
+			$data_template = $this->bindingFormatData($response_structure,$length);
+			$result[$response_format['data_key']] = $data_template;
+
+			return $result;
 		}
 		else
 		{
 			$result = $this->bindingFormatData($response_structure,$length);
+		}
+
+		if($is_single)
+		{
+			$result = $result[0];
 		}
 
 		return $result;

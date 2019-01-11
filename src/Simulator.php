@@ -17,6 +17,7 @@ class Simulator
 	private $response_format;
 	private $response_structure;
 	private $length;
+	private $is_single=false;
 
 	public function __construct($response_structure,$length=1)
 	{
@@ -72,23 +73,44 @@ class Simulator
 	private function mappingResponseData()
 	{
 		$result = $this->template;
-		$result[$this->template_result_key] = $this->bindingFactory->bindingKeys($this->response_structure,$this->response_format,$this->length);
+		$result[$this->template_result_key] = $this->bindingFactory->bindingKeys($this->response_structure,$this->response_format,$this->length,$this->is_single);
 		$this->result = $result;
 	}
 
-	public function template($response_format)
+	public function length($length)
+	{
+		$this->length = $length;
+		return $this;
+	}
+
+	public function template($response_format, $data=[])
 	{
 		if(!isset($this->response_formats[$response_format]))
 		{
 			throw new InvalidConfigException('API Response Simulator config invalid : missing response_format "'.$response_format.'" config');
 		}
 		$this->response_format = $this->response_formats[$response_format];
+
+		foreach($this->response_format['template'] as $key=>&$value)
+		{
+			if(isset($data[$key]) && $key != $this->response_format['data_key'])
+			{
+				$value = $data[$key];
+			}
+		}
+
+		return $this;
+	}
+
+	public function single()
+	{
+		$this->is_single = true;
+		return $this;
 	}
 
 	public function response()
 	{
 		$this->mappingResponseData();
-		dd($this->result);
 		return response()->json($this->result);
 	}
 }
