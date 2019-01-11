@@ -8,8 +8,9 @@ class Binding
 
 	}
 
-	public function bindingKeys($response_format,$response_structure,$length=1)
+	public function bindingKeys($response_structure,$response_format,$length=1)
 	{
+		dd($response_format);
 		$result = [];
 		$response_data = null;
 

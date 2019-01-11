@@ -65,26 +65,24 @@ class Simulator
 		}
 		else
 		{
-			$this->response_format = [];
+			$this->response_format = false;
 		}
 	}
 
 	private function mappingResponseData()
 	{
 		$result = $this->template;
-		$result[$this->template_result_key] = $this->bindingFactory->bindingKeys($this->response_format,$this->response_structure,$this->length);
+		$result[$this->template_result_key] = $this->bindingFactory->bindingKeys($this->response_structure,$this->response_format,$this->length);
 		$this->result = $result;
 	}
 
-	public function with($response_format=null)
+	public function template($response_format)
 	{
-		if($response_format)
+		if(!isset($this->response_formats[$response_format]))
 		{
-			if(isset($this->response_formats[$response_format]))
-			{
-				$this->response_format = $this->response_formats[$response_format];
-			}
+			throw new InvalidConfigException('API Response Simulator config invalid : missing response_format "'.$response_format.'" config');
 		}
+		$this->response_format = $this->response_formats[$response_format];
 	}
 
 	public function response()
