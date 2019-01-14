@@ -19,7 +19,7 @@ class ExampleController
 			'ac' => 'integer|in:0,1'
 		];
 
-		$template = [
+		$template = [   
 			'length' => 10,
 			'page' => 2,
 			'total_page' => 5,
