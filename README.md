@@ -39,7 +39,7 @@ suffix|Code suffix|```code=>"code|suffix:-SUF"```
 
 
 Date
-----
+-----
  Option      |Description| Example
 :-----------|:----------|:---------------------------
 value|Specific response value, ```value=current``` going to return current time follow bellow format|```birthday=>"date|value:2019-01-01"```
