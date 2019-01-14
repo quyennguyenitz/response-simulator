@@ -21,7 +21,8 @@
         "psr-4": {
             "QuyenNguyenItz\\": "src/",
             "QuyenNguyenItz\\Helpers\\": "helpers/",
-            "QuyenNguyenItz\\Exceptions\\": "exceptions/"
+            "QuyenNguyenItz\\Exceptions\\": "exceptions/",
+            "QuyenNguyenItz\\Examples\\": "examples/"
         }
     }
 }

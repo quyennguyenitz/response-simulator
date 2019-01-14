@@ -7,7 +7,7 @@ class DataType
 {
 	const DATA_RULES = [
 		'code' => ['prefix','content','suffix'],
-		'integer' => ['length','in'],
+		'integer' => ['length','in','range','value'],
 		'string' => ['min','max','in'],
 		'date' => ['format','min','max','value']
 	];
@@ -52,7 +52,11 @@ class DataType
 
 	private static function getIntegerValue($conditions)
 	{
-		if(isset($conditions['in']) && !empty($conditions['in']))
+		if(isset($conditions['value']))
+		{
+			return $conditions['value'];
+		}
+		elseif(isset($conditions['in']) && !empty($conditions['in']))
 		{
 			$val = self::getRandomValueFromArray($conditions['in']);
 		}
