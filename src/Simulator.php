@@ -105,7 +105,6 @@ class Simulator
 		$result = $this->template;
 		$result[$this->template_result_key] = $this->bindingFactory->bindingKeys($this->response_structure,$this->response_format,$this->length,$this->is_single);
 		$this->result = $result;
-		dd($this->result);
 	}
 
 	public function single()
